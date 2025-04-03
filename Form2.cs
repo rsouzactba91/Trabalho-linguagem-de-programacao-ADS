@@ -30,8 +30,7 @@ namespace estacionamento_basico
 
         private void AtualizarDataGrid()
         {
-            dgvlistadeveiculos.DataSource = null;
-            dgvlistadeveiculos.DataSource = listaVeiculo;
+           dgvlistadeveiculos.DataSource = listaVeiculo.ToList();
         }
 
 
@@ -44,11 +43,9 @@ namespace estacionamento_basico
             Form5 form = new Form5();
             form.Show();
         }
-        private void txbentrada_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
+     
 
-        private void txbsaida_TextChanged(object sender, EventArgs e)
+     /*   private void txbsaida_TextChanged(object sender, EventArgs e)
         {
             if (DateTime.TryParse(txbsaida.Text, out DateTime saida))
             {
@@ -63,18 +60,9 @@ namespace estacionamento_basico
                 MessageBox.Show("Digite uma data e hora válidas!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txbsaida.Clear();
             }
-        }
-        private void txbcobranca_TextChanged(object sender, EventArgs e)
-        {
-            // Apenas exibe o valor atualizado
-            txbcobranca.Text = veiculo.CalcularCobranca().ToString("C");
-        }
-        // Método para registrar o pagamento (chamado por um botão, por exemplo)
-        private void btnRegistrarPagamento_Click(object sender, EventArgs e)
-        {
-            veiculo.RegistrarPagamento();
-            MessageBox.Show("Pagamento registrado com sucesso!", "Informação", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+        }*/
+
+       
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -94,23 +82,49 @@ namespace estacionamento_basico
         }
 
         private void btnsaida_Click(object sender, EventArgs e)
-        {veiculo.Placa = txbsaida.Text;
-            if (veiculo.ValorPago)
+        {
+            dgvlistadeveiculos.SelectedRows[0].Cells["Placa"].Value.ToString();
+            /*if (veiculo.ValorPago)
             {
                 veiculo.RegistrarSaida(DateTime.Now);
             }
             else
             {
-                // Captura a placa selecionada no DataGridView
-                string? placaSelecionada = dgvlistadeveiculos.SelectedRows[0].Cells["Placa"].Value.ToString();
+                // Captura a linha selecionada no DataGridView*/
+                if (dgvlistadeveiculos.SelectedRows.Count > 0)
+                {
+                    int rowIndex = dgvlistadeveiculos.SelectedRows[0].Index;
+                    DataGridViewRow selectedRow = dgvlistadeveiculos.Rows[rowIndex];
 
-                // Abre o Form3 e passa a placa
-                Form3 form3 = new Form3(placaSelecionada);
-                form3.Show();
+                    // Captura todas as informações necessárias da linha selecionada
+                    string? placaSelecionada = selectedRow.Cells["Placa"].Value?.ToString();
+                    int ticket = Convert.ToInt32(selectedRow.Cells["Ticket"].Value);
+                    DateTime entrada = Convert.ToDateTime(selectedRow.Cells["Entrada"].Value);
+                    DateTime? saida = selectedRow.Cells["Saida"].Value as DateTime?;
+                    int tempoDeEstadia = Convert.ToInt32(selectedRow.Cells["TempoDeEstadia"].Value);
+                    double valor = Convert.ToDouble(selectedRow.Cells["Valor"].Value);
+                    bool valorPago = Convert.ToBoolean(selectedRow.Cells["ValorPago"].Value);
+
+                    // Atualiza o objeto veiculo com as informações capturadas
+                    veiculo.Placa = placaSelecionada;
+                    veiculo.Ticket = ticket;
+                    veiculo.Entrada = entrada;
+                    veiculo.Saida = saida;
+                    veiculo.TempoDeEstadia = tempoDeEstadia;
+                    veiculo.ValorPago = valorPago;
+
+                    // Abre o Form3 e passa a placa
+                    Form3 form3 = new Form3();
+                    form3.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Nenhuma placa selecionada!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 
     }
-}
+
 
 
