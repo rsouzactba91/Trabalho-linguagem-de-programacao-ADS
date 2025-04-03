@@ -14,15 +14,31 @@ namespace estacionamento_basico
         public int Ticket { get; set; }
         public DateTime Entrada { get; set; }
         public DateTime? Saida { get; set; } // Alterado para nullable para evitar valores inválidos
-        public int TempoDeEstadia { get; set; }
+        public double TempoDeEstadia
+        {
+            get
+            {
+                Entrada = DateTime.Now;
+
+                    return TempoDeEstadia;
+            }
+            set {
+                DateTime horaAtual = DateTime.Now;
+
+                Saida.HasValue ? (Saida.Value - Entrada).TotalMinutes : (horaAtual - Entrada).TotalMinutes;
+            }
+        }
+
         public double Valor
         {
             get
             {
-                double taxaPorHora = 10;
-                return Math.Ceiling(TempoDeEstadia / 60.0) * taxaPorHora;
+                CalcularCobranca(); return Valor;
+                
             }
+            set { }
         }
+
         public bool ValorPago { get; set; }
         public void RegistrarEntrada(DateTime Dataentrada)
         {
@@ -32,7 +48,7 @@ namespace estacionamento_basico
 
         public void RegistrarSaida(DateTime dataHoraSaida)
         {
-            if (ValorPago)
+            if (ValorPago == true)
             {
                 Saida = dataHoraSaida;
             }
@@ -45,13 +61,24 @@ namespace estacionamento_basico
 
         public double CalcularCobranca()
         {
+            double tempoDeEstadia = TempoDeEstadia;
+
+            if (tempoDeEstadia <= 60)
+                Valor = 5;
+            else if (tempoDeEstadia <= 120)
+                Valor = 10;
+            else
+                Valor = 15;
+
+            ValorPago = false;
+
             return Valor;
         }
 
         public void RegistrarPagamento()
         {
             ValorPago = true;
-            Console.WriteLine($"Pagamento registrado para o carro de placa {Placa}.");
+            
         }
     }
 
