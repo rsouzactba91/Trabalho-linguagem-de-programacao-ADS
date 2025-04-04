@@ -13,16 +13,30 @@ namespace estacionamento_basico
         public string? Placa { get; set; }
         public int Ticket { get; set; }
         public DateTime Entrada { get; set; }
-        public DateTime? Saida { get; set; } // Alterado para nullable para evitar valores inválidos
-        public int TempoDeEstadia { get; set; }
+        public DateTime Saida { get; set; }
+       /* public double TempoDeEstadia
+        {
+            get
+            {
+                DateTime horaAtual = DateTime.Now;
+                TimeSpan? duracao = Saida.HasValue ? Saida.Value - Entrada : horaAtual - Entrada;
+                return duracao.Value.TotalMinutes;
+            }
+        }
+       */
+
         public double Valor
         {
             get
             {
-                double taxaPorHora = 10;
-                return Math.Ceiling(TempoDeEstadia / 60.0) * taxaPorHora;
+                return CalcularCobranca();
+            }
+            set
+            {
+                
             }
         }
+
         public bool ValorPago { get; set; }
         public void RegistrarEntrada(DateTime Dataentrada)
         {
@@ -32,7 +46,7 @@ namespace estacionamento_basico
 
         public void RegistrarSaida(DateTime dataHoraSaida)
         {
-            if (ValorPago)
+            if (ValorPago == true)
             {
                 Saida = dataHoraSaida;
             }
@@ -45,13 +59,22 @@ namespace estacionamento_basico
 
         public double CalcularCobranca()
         {
-            return Valor;
+            double tempoDeEstadia = (DateTime.Now - Entrada).TotalMinutes;
+
+            if (tempoDeEstadia <= 15)
+                return 0;
+            else if (tempoDeEstadia >= 16)
+                return 13;
+            else if (tempoDeEstadia >=31)
+                return 19;
+            else
+                return 26;
         }
 
         public void RegistrarPagamento()
         {
             ValorPago = true;
-            Console.WriteLine($"Pagamento registrado para o carro de placa {Placa}.");
+            
         }
     }
 
