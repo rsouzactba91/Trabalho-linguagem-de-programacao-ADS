@@ -1,29 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace estacionamento_basico
 {
     public partial class Form3 : Form
     {
-        public Form3(string placa)
+        public Veiculo VeiculoEditado { get; private set; }
+
+        public Form3(Veiculo veiculo)
         {
             InitializeComponent();
-            textBox1.Text = placa; // Define a placa no TextBox automaticamente
+
+            VeiculoEditado = veiculo;
+            txbplaca.Text = veiculo.Placa;
+            txbticket.Text = veiculo.Ticket.ToString();
+            txtbentrada.Text = veiculo.Entrada.ToString("dd/MM/yyyy HH:mm:ss");
+
+            double valorCalculado = veiculo.CalcularCobranca();
+            txbvalor.Text = valorCalculado.ToString("C");
+            txbvalorpago.Text = veiculo.ValorPago ? "Pago" : "Não Pago";
+
+            txbplaca.Enabled = false;
+            txbticket.Enabled = false;
+            txtbentrada.Enabled = false;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnpagar_Click(object sender, EventArgs e)
         {
-            Veiculo veiculo = new Veiculo();
-            veiculo.Placa = textBox1.Text;
-            veiculo.RegistrarPagamento();
-            Close();
+            try
+            {
+                VeiculoEditado.RegistrarPagamento();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao salvar: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
