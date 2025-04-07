@@ -51,15 +51,17 @@ namespace estacionamento_basico
                 lblmsg.Text = "Login ou senha incorretos!";
             }
             if (loginok == "admin" && senhaok == "admin")
-            {
+            {   limpar();
                 Form2 form2 = new Form2();
                 form2.Show();
             }
         }
-
-        private void lblmsg_TextChanged(object sender, EventArgs e)
-        {
-
+        public void limpar()
+        {   txblogin.Text = string.Empty;
+            txbsenha.Text = string.Empty;
+            lblmsg.Text = string.Empty;
         }
+
+
     }
 }

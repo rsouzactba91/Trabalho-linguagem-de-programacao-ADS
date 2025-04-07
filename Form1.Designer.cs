@@ -87,7 +87,7 @@
             lblmsg.Size = new Size(0, 15);
             lblmsg.TabIndex = 6;
             lblmsg.TextAlign = ContentAlignment.MiddleCenter;
-            lblmsg.Click += lblmsg_TextChanged;
+       
             // 
             // Form1
             // 
