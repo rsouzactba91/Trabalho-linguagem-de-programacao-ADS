@@ -1,0 +1,1 @@
+<h4>Este projeto foi desenvolvido para testar condições em C#, incluindo o envio de parâmetros entre telas e o retorno de informações atualizadas. Também foram utilizados DataGridView e conceitos de orientação a objetos.</h4>
